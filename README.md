@@ -33,6 +33,8 @@ Getting Started
 1. Set up the LAN and Download the Node.js
 - Configure a router as a private 2.4 GHz access point (air-gapped).
 - Install Mosquitto on your host PC and open TCP port 1883 in the firewall.
+- Under the same installed path, find the file "mosquitto.CONF", replace it with the "mosquitto.CONF" file inside the github.
+- Go to servces.msc to Start or Restart your Mosquitto server.
 - Go website https://nodejs.org/ to download the LTS version (recommended for most users).
 - Node-RED is available as an npm package, install it globally in cmd with command : npm install -g --unsafe-perm node-red.
 - after downloading, activate it in cmd by typing "node-red".
@@ -49,5 +51,7 @@ Getting Started
 - Once the texts under the nodes show connected, the connection is established.
 - Visit http://<host-ip>:1880/ui to control the panel.
 - Switch on/off the switches to check the IoT update on the LED.
+- If want to enable the hard disk memory function, go setting.js to enable relavant functions.
+- Recommend to register with an Admin account with id "Admin" to unlock various restriction.
 
 With these steps complete, you’ll have a fully functional, locally-isolated depot indicator system that is easy to extend and maintain.
