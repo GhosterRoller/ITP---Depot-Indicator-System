@@ -20,6 +20,7 @@ train/<TRAIN_ID>/control/status
 ```json
 { "ignoreCommands": true }
 { "ignoreCommands": false }
+```
 to train/<TRAIN_ID>/control/status
 - Ensures the main board locks out normal commands until the hazard is cleared
 
