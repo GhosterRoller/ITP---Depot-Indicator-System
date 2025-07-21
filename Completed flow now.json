@@ -1,0 +1,1377 @@
+[
+    {
+        "id": "d367bcf9962b3ef0",
+        "type": "tab",
+        "label": "Train Depot Control",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "d4d5af643b024af8",
+        "type": "debug",
+        "z": "d367bcf9962b3ef0",
+        "name": "return result 1",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1340,
+        "y": 580,
+        "wires": []
+    },
+    {
+        "id": "b7610fad70c50a12",
+        "type": "debug",
+        "z": "d367bcf9962b3ef0",
+        "name": "return result 2",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1420,
+        "y": 760,
+        "wires": []
+    },
+    {
+        "id": "4c87c7e8e531fe2f",
+        "type": "ui_template",
+        "z": "d367bcf9962b3ef0",
+        "group": "login_group",
+        "name": "Login Form",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "format": "<div style=\"max-width:400px; margin:auto; padding:2rem;\">\n  <h2 style=\"text-align:center;\">Login</h2>\n  <form ng-submit=\"send({topic: 'loginSubmit', payload: {user: username, pass: password}})\">\n    <div>\n      <label>Username:</label>\n      <input type=\"text\" ng-model=\"username\" ng-change=\"send({topic:'clearError'})\" class=\"nr-dashboard-textinput\">\n    </div>\n    <div style=\"margin-top:1rem;\">\n      <label>Password:</label>\n      <input type=\"password\" ng-model=\"password\" ng-change=\"send({topic:'clearError'})\" class=\"nr-dashboard-textinput\">\n    </div>\n    <div style=\"margin-top:1rem; text-align:center;\">\n      <button type=\"submit\" class=\"nr-dashboard-button\">Login</button>\n    </div>\n  </form>\n  <div ng-if=\"msg.payload && msg.topic === 'loginError'\" style=\"color:red; text-align:center; margin-top:1rem;\">\n    {{msg.payload}}\n  </div>\n\n  <!-- Create Account button -->\n  <div style=\"text-align:center; margin-top:1rem;\">\n    <button ng-click=\"send({topic: 'goToSignup'})\" class=\"nr-dashboard-button\">Create Account</button>\n  </div>\n</div>",
+        "storeOutMessages": true,
+        "fwdInMessages": false,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 250,
+        "y": 720,
+        "wires": [
+            [
+                "69da43728b59e134",
+                "904de3648243f626"
+            ]
+        ]
+    },
+    {
+        "id": "69da43728b59e134",
+        "type": "switch",
+        "z": "d367bcf9962b3ef0",
+        "name": "Route Login Events",
+        "property": "topic",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "loginSubmit",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "clearError",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 660,
+        "y": 720,
+        "wires": [
+            [
+                "0fcd7070aa82a593"
+            ],
+            [
+                "290022a491cb0eb4"
+            ]
+        ]
+    },
+    {
+        "id": "0fcd7070aa82a593",
+        "type": "function",
+        "z": "d367bcf9962b3ef0",
+        "name": "Validate Credentials",
+        "func": "const { user, pass } = msg.payload;\nconst sid = msg.socketid;\n\n// Get user list\nlet users = global.get(\"users\") || {};\n\nif (users[user] && users[user].password === pass) {\n    // Login success\n    flow.set(\"loggedIn_\" + sid, true);\n    flow.set(\"lastLoginUser_\" + sid, user);\n\n    // Instead of returning the ui_control directly, pass through for delay\n    return {\n        payload: \"Login successful\", // or just use a neutral message\n        topic: \"loginSuccess\",\n        socketid: sid\n    };\n\n} else {\n    return {\n        payload: \"Invalid credentials\",\n        topic: \"loginError\",\n        socketid: sid\n    };\n}\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 900,
+        "y": 660,
+        "wires": [
+            [
+                "6acb163d09adc6d6"
+            ]
+        ]
+    },
+    {
+        "id": "6acb163d09adc6d6",
+        "type": "function",
+        "z": "d367bcf9962b3ef0",
+        "name": "Return Result",
+        "func": "if (msg.topic === \"loginError\") {\n    return [msg, null]; // Send to login_template for display\n}\n\nif (msg.topic === \"loginSuccess\") {\n    return [null, msg]; // Send to delay before tab switch\n}\n",
+        "outputs": 2,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1180,
+        "y": 660,
+        "wires": [
+            [
+                "4c87c7e8e531fe2f",
+                "d4d5af643b024af8",
+                "9d53bbc4687bd4d8"
+            ],
+            [
+                "b7610fad70c50a12",
+                "6c14fa07db16c5fe",
+                "3966bfce265c9188"
+            ]
+        ]
+    },
+    {
+        "id": "290022a491cb0eb4",
+        "type": "change",
+        "z": "d367bcf9962b3ef0",
+        "name": "Clear Error Now",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "loginError",
+                "tot": "str"
+            }
+        ],
+        "x": 900,
+        "y": 780,
+        "wires": [
+            [
+                "4c87c7e8e531fe2f"
+            ]
+        ]
+    },
+    {
+        "id": "3cd34ad425f57463",
+        "type": "ui_ui_control",
+        "z": "d367bcf9962b3ef0",
+        "name": "Redirect to Home",
+        "events": "all",
+        "x": 1510,
+        "y": 540,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "9d53bbc4687bd4d8",
+        "type": "delay",
+        "z": "d367bcf9962b3ef0",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "3",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 1180,
+        "y": 780,
+        "wires": [
+            [
+                "290022a491cb0eb4"
+            ]
+        ]
+    },
+    {
+        "id": "dc7e3bab6c12125c",
+        "type": "ui_button",
+        "z": "d367bcf9962b3ef0",
+        "name": "Logout Button",
+        "group": "bd53f028b026c632",
+        "order": 99,
+        "width": 6,
+        "height": 1,
+        "passthru": false,
+        "label": "🔓 Logout",
+        "tooltip": "Logout and return to login screen",
+        "color": "#ffffff",
+        "bgcolor": "#d32f2f",
+        "className": "",
+        "icon": "logout",
+        "payload": "",
+        "payloadType": "str",
+        "topic": "logout",
+        "topicType": "str",
+        "x": 380,
+        "y": 940,
+        "wires": [
+            [
+                "285a935c0c71ca09"
+            ]
+        ]
+    },
+    {
+        "id": "285a935c0c71ca09",
+        "type": "function",
+        "z": "d367bcf9962b3ef0",
+        "name": "Clear Session",
+        "func": "const sid = msg.socketid;\n\nflow.set(\"loggedIn_\" + sid, false);\nflow.set(\"lastLoginUser_\" + sid, null);\nflow.set(\"selectedTrainId_\" + sid, null);\n\nreturn {\n    payload: { tab: \"Login\" },\n    topic: \"ui_control\",\n    socketid: sid\n};",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 600,
+        "y": 940,
+        "wires": [
+            [
+                "900c5a30b10b9017"
+            ]
+        ]
+    },
+    {
+        "id": "900c5a30b10b9017",
+        "type": "ui_ui_control",
+        "z": "d367bcf9962b3ef0",
+        "name": "Redirect to Login",
+        "events": "all",
+        "x": 820,
+        "y": 940,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "aa64a5592526c2ee",
+        "type": "ui_template",
+        "z": "d367bcf9962b3ef0",
+        "group": "c2727ab9de8ed51f",
+        "name": "Signup Form",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "format": "<div style=\"max-width:400px; margin:auto; padding:2rem;\">\n  <h2 style=\"text-align:center;\">Create Account</h2>\n  <form ng-submit=\"send({topic: 'signupSubmit', payload: {user: username, pass: password}})\">\n    <div>\n      <label>Username:</label>\n      <input type=\"text\" ng-model=\"username\" ng-change=\"send({topic:'clearSignupError'})\" class=\"nr-dashboard-textinput\">\n    </div>\n    <div style=\"margin-top:1rem;\">\n      <label>Password:</label>\n      <input type=\"password\" ng-model=\"password\" ng-change=\"send({topic:'clearSignupError'})\" class=\"nr-dashboard-textinput\">\n    </div>\n    <div style=\"margin-top:1rem; text-align:center;\">\n      <button type=\"submit\" class=\"nr-dashboard-button\">Sign Up</button>\n    </div>\n  </form>\n  <div ng-if=\"msg.payload && msg.topic === 'signupError'\" style=\"color:red; text-align:center; margin-top:1rem;\">\n    {{msg.payload}}\n  </div>\n\n  <!-- Back to Login button -->\n  <div style=\"text-align:center; margin-top:1rem;\">\n    <button ng-click=\"send({topic: 'goToLogin'})\" class=\"nr-dashboard-button\">Back to Login</button>\n  </div>\n</div>\n",
+        "storeOutMessages": true,
+        "fwdInMessages": false,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 250,
+        "y": 1080,
+        "wires": [
+            [
+                "cfb25c55d61fa5d1",
+                "36d4273de2336774"
+            ]
+        ]
+    },
+    {
+        "id": "cfb25c55d61fa5d1",
+        "type": "switch",
+        "z": "d367bcf9962b3ef0",
+        "name": "Route Signup Events",
+        "property": "topic",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "signupSubmit",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "clearSignupError",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 670,
+        "y": 1080,
+        "wires": [
+            [
+                "8cd7227d92773d92"
+            ],
+            [
+                "6ad3ee10f80dc83d"
+            ]
+        ]
+    },
+    {
+        "id": "8cd7227d92773d92",
+        "type": "function",
+        "z": "d367bcf9962b3ef0",
+        "name": "Register New User",
+        "func": "const { user, pass } = msg.payload;\nif (!user || !pass) return null;\n\nlet users = global.get(\"users\") || {};\n\nif (users[user]) {\n    return {\n        payload: \"Username already exists.\",\n        topic: \"signupError\",\n        socketid: msg.socketid\n    };\n}\n\n// Save new user\nusers[user] = {\n    password: pass,\n    createdAt: new Date().toISOString()\n};\nglobal.set(\"users\", users);\n\nreturn {\n    payload: { tab: \"Login\" },\n    topic: \"ui_control\",\n    socketid: msg.socketid\n};",
+        "outputs": 1,
+        "x": 930,
+        "y": 1040,
+        "wires": [
+            [
+                "10ea73b79d857ce8"
+            ]
+        ]
+    },
+    {
+        "id": "10ea73b79d857ce8",
+        "type": "function",
+        "z": "d367bcf9962b3ef0",
+        "name": "Route Signup Result",
+        "func": "if (msg.topic === \"signupError\") {\n    return [msg, null];\n}\nreturn [null, msg];",
+        "outputs": 2,
+        "x": 1300,
+        "y": 1080,
+        "wires": [
+            [
+                "aa64a5592526c2ee",
+                "7c55dd08a800c221"
+            ],
+            [
+                "6fc6d34b74e7f92f"
+            ]
+        ]
+    },
+    {
+        "id": "6ad3ee10f80dc83d",
+        "type": "change",
+        "z": "d367bcf9962b3ef0",
+        "name": "Clear Signup Error",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "signupError",
+                "tot": "str"
+            }
+        ],
+        "x": 1070,
+        "y": 1200,
+        "wires": [
+            [
+                "aa64a5592526c2ee"
+            ]
+        ]
+    },
+    {
+        "id": "6fc6d34b74e7f92f",
+        "type": "ui_ui_control",
+        "z": "d367bcf9962b3ef0",
+        "name": "Back to Login Tab",
+        "events": "all",
+        "x": 1610,
+        "y": 1080,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "7c55dd08a800c221",
+        "type": "delay",
+        "z": "d367bcf9962b3ef0",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 1320,
+        "y": 1200,
+        "wires": [
+            [
+                "6ad3ee10f80dc83d"
+            ]
+        ]
+    },
+    {
+        "id": "904de3648243f626",
+        "type": "switch",
+        "z": "d367bcf9962b3ef0",
+        "name": "",
+        "property": "topic",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "goToSignup",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 430,
+        "y": 660,
+        "wires": [
+            [
+                "2c92e64b6007d61d"
+            ]
+        ]
+    },
+    {
+        "id": "2c92e64b6007d61d",
+        "type": "function",
+        "z": "d367bcf9962b3ef0",
+        "name": "go to signup",
+        "func": "return {\n    payload: { tab: \"Signup\" },\n    topic: \"ui_control\",\n    socketid: msg.socketid\n};\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 610,
+        "y": 660,
+        "wires": [
+            [
+                "c7f42734bdd52c37"
+            ]
+        ]
+    },
+    {
+        "id": "c7f42734bdd52c37",
+        "type": "ui_ui_control",
+        "z": "d367bcf9962b3ef0",
+        "name": "",
+        "events": "all",
+        "x": 820,
+        "y": 600,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "36d4273de2336774",
+        "type": "switch",
+        "z": "d367bcf9962b3ef0",
+        "name": "",
+        "property": "topic",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "goToLogin",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 410,
+        "y": 1020,
+        "wires": [
+            [
+                "0bfcc3d1f43e890b"
+            ]
+        ]
+    },
+    {
+        "id": "0bfcc3d1f43e890b",
+        "type": "function",
+        "z": "d367bcf9962b3ef0",
+        "name": "go to signup",
+        "func": "return {\n    payload: { tab: \"Login\" },\n    topic: \"ui_control\",\n    socketid: msg.socketid\n};\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 590,
+        "y": 1020,
+        "wires": [
+            [
+                "e087d7cf27ea8a72"
+            ]
+        ]
+    },
+    {
+        "id": "e087d7cf27ea8a72",
+        "type": "ui_ui_control",
+        "z": "d367bcf9962b3ef0",
+        "name": "",
+        "events": "all",
+        "x": 760,
+        "y": 1000,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "6c96ef1740628436",
+        "type": "function",
+        "z": "d367bcf9962b3ef0",
+        "name": "go home",
+        "func": "return {\n  payload: { tab: \"Home\" },\n  topic: \"ui_control\",\n  socketid: msg.socketid\n};\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1540,
+        "y": 580,
+        "wires": [
+            [
+                "3cd34ad425f57463"
+            ]
+        ]
+    },
+    {
+        "id": "9da0fe800735a9d3",
+        "type": "ui_ui_control",
+        "z": "d367bcf9962b3ef0",
+        "name": "Tab Trigger",
+        "events": "all",
+        "x": 250,
+        "y": 1280,
+        "wires": [
+            [
+                "c4e3a58fbe378884"
+            ]
+        ]
+    },
+    {
+        "id": "c4e3a58fbe378884",
+        "type": "function",
+        "z": "d367bcf9962b3ef0",
+        "name": "Inject Login Status",
+        "func": "let sid = msg.socketid;\nmsg.loggedIn = flow.get(\"loggedIn_\" + sid) || false;\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 520,
+        "y": 1280,
+        "wires": [
+            [
+                "abd049e549c60d4f",
+                "4363bdbce2decd9e"
+            ]
+        ]
+    },
+    {
+        "id": "abd049e549c60d4f",
+        "type": "ui_template",
+        "z": "d367bcf9962b3ef0",
+        "group": "bd53f028b026c632",
+        "name": "Guard Home Template",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "format": "<div ng-if=\"!msg.loggedIn\" style=\"color: red; padding: 2rem; font-weight: bold;\">\n  🚫 You are not logged in. Redirecting to login...\n</div>\n\n<script>\n(function(scope) {\n    scope.$watch('msg', function(msg) {\n        if (msg && msg.loggedIn === false) {\n            scope.send({ topic: \"forceRedirect\" });\n        }\n    });\n})(scope);\n</script>",
+        "storeOutMessages": true,
+        "fwdInMessages": false,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 800,
+        "y": 1280,
+        "wires": [
+            [
+                "683f0be9f0b8e23c"
+            ]
+        ]
+    },
+    {
+        "id": "4363bdbce2decd9e",
+        "type": "ui_template",
+        "z": "d367bcf9962b3ef0",
+        "group": "cc3f335b90adc946",
+        "name": "Guard Train Tab Template",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "format": "<div ng-if=\"!msg.loggedIn\" style=\"color: red; padding: 2rem; font-weight: bold;\">\n  🚫 You are not logged in. Redirecting to login...\n</div>\n\n<script>\n(function(scope) {\n    scope.$watch('msg', function(msg) {\n        if (msg && msg.loggedIn === false) {\n            scope.send({ topic: \"forceRedirectTrain\" });\n        }\n    });\n})(scope);\n</script>",
+        "storeOutMessages": true,
+        "fwdInMessages": false,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 810,
+        "y": 1340,
+        "wires": [
+            [
+                "897bc5b52b0b96ca"
+            ]
+        ]
+    },
+    {
+        "id": "897bc5b52b0b96ca",
+        "type": "function",
+        "z": "d367bcf9962b3ef0",
+        "name": "Redirect Train to Login",
+        "func": "return {\n    payload: { tab: \"Login\" },\n    topic: \"ui_control\",\n    socketid: msg.socketid\n};",
+        "outputs": 1,
+        "x": 1100,
+        "y": 1340,
+        "wires": [
+            [
+                "3011df65ab1c6992"
+            ]
+        ]
+    },
+    {
+        "id": "683f0be9f0b8e23c",
+        "type": "function",
+        "z": "d367bcf9962b3ef0",
+        "name": "Redirect to Login",
+        "func": "return {\n    payload: { tab: \"Login\" },\n    topic: \"ui_control\",\n    socketid: msg.socketid\n};",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1080,
+        "y": 1280,
+        "wires": [
+            [
+                "3ad8892cee0f439f"
+            ]
+        ]
+    },
+    {
+        "id": "3ad8892cee0f439f",
+        "type": "ui_ui_control",
+        "z": "d367bcf9962b3ef0",
+        "name": "Home Tab Redirect",
+        "events": "all",
+        "x": 1330,
+        "y": 1280,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "3011df65ab1c6992",
+        "type": "ui_ui_control",
+        "z": "d367bcf9962b3ef0",
+        "name": "Train Tab Redirect",
+        "events": "all",
+        "x": 1350,
+        "y": 1340,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "6c14fa07db16c5fe",
+        "type": "function",
+        "z": "d367bcf9962b3ef0",
+        "name": "Force Guard Refresh",
+        "func": "return {\n  topic: \"triggerRefreshGuard\",\n  socketid: msg.socketid\n};\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1380,
+        "y": 920,
+        "wires": [
+            [
+                "c4e3a58fbe378884"
+            ]
+        ]
+    },
+    {
+        "id": "3966bfce265c9188",
+        "type": "delay",
+        "z": "d367bcf9962b3ef0",
+        "name": "Wait to render",
+        "pauseType": "delay",
+        "timeout": "200",
+        "timeoutUnits": "milliseconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 1420,
+        "y": 660,
+        "wires": [
+            [
+                "6c96ef1740628436"
+            ]
+        ]
+    },
+    {
+        "id": "7a7fbb147340537a",
+        "type": "ui_template",
+        "z": "d367bcf9962b3ef0",
+        "group": "bd53f028b026c632",
+        "name": "Main Template",
+        "order": 2,
+        "width": "0",
+        "height": "0",
+        "format": "<!------------------------------------------------------>\n<!------------------- CSS STYLES --------------------->\n<!------------------------------------------------------>\n<style>\n    /* Main container */\n    .train-app {\n        font-family: Arial, sans-serif;\n        padding: 10px;\n        background: #222;\n        color: #eee;\n        height: 100%;\n    }\n\n    /* Train list */\n    .train-list {\n        display: grid;\n        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));\n        gap: 15px;\n    }\n\n    .train-card {\n        background: #333;\n        border: 1px solid #444;\n        border-radius: 8px;\n        padding: 15px;\n        cursor: pointer;\n        transition: all 0.2s ease-in-out;\n        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);\n    }\n\n    .train-card:hover {\n        border-color: #0094ce;\n        transform: translateY(-3px);\n    }\n\n    .train-card h3 {\n        margin-top: 0;\n        color: #00bfff;\n    }\n\n    /* LEDs */\n    .led {\n        display: inline-block;\n        width: 16px;\n        height: 16px;\n        border-radius: 50%;\n        margin: 0 5px;\n        vertical-align: middle;\n        border: 1px solid #111;\n    }\n\n    .led-green {\n        background: #4caf50;\n        box-shadow: 0 0 8px #4caf50;\n    }\n\n    .led-red {\n        background: #f44336;\n        box-shadow: 0 0 8px #f44336;\n    }\n\n    .led-yellow {\n        background: #ffc107;\n        box-shadow: 0 0 8px #ffc107;\n    }\n\n    .led-off {\n        background: #555;\n    }\n\n    .blink {\n        animation: blink 1s linear infinite;\n    }\n\n    @keyframes blink {\n        50% {\n            opacity: 0.2;\n        }\n    }\n\n    /* Modal for detailed view */\n    .modal-overlay {\n        position: fixed;\n        top: 0;\n        left: 0;\n        width: 100%;\n        height: 100%;\n        background: rgba(0, 0, 0, 0.8);\n        display: flex;\n        justify-content: center;\n        align-items: center;\n        z-index: 1000;\n    }\n\n    .modal-content {\n        background: #333;\n        padding: 20px;\n        border-radius: 10px;\n        width: 90%;\n        max-width: 600px;\n        border: 1px solid #0094ce;\n    }\n\n    .modal-content h2 {\n        color: #00bfff;\n        margin-top: 0;\n    }\n\n    .control-grid {\n        display: grid;\n        grid-template-columns: 1fr 1fr;\n        gap: 15px;\n        margin-top: 20px;\n    }\n\n    /* Custom Switch */\n    .custom-switch {\n        display: flex;\n        justify-content: space-between;\n        align-items: center;\n        background: #444;\n        padding: 10px;\n        border-radius: 5px;\n        cursor: pointer;\n    }\n\n    .custom-switch .switch-toggle {\n        position: relative;\n        display: inline-block;\n        width: 50px;\n        height: 24px;\n    }\n\n    .custom-switch .slider {\n        position: absolute;\n        top: 0;\n        left: 0;\n        right: 0;\n        bottom: 0;\n        background-color: #666;\n        transition: .4s;\n        border-radius: 24px;\n    }\n\n    .custom-switch .slider:before {\n        position: absolute;\n        content: \"\";\n        height: 18px;\n        width: 18px;\n        left: 3px;\n        bottom: 3px;\n        background-color: white;\n        transition: .4s;\n        border-radius: 50%;\n    }\n\n    .custom-switch.active .slider {\n        background-color: #4caf50;\n    }\n\n    .custom-switch.active .slider:before {\n        transform: translateX(26px);\n    }\n\n    /* Custom Slider */\n    .custom-slider-container {\n        grid-column: 1 / -1;\n        /* Span both columns */\n    }\n\n    input[type=range] {\n        width: 100%;\n        cursor: pointer;\n    }\n    .delete-btn {\n        background: transparent;\n        border: none;\n        color: #f44336;\n        font-size: 1rem;\n        cursor: pointer;\n        margin-left: 8px;\n    }\n    .delete-btn:hover {\n        color: #ff7961;\n    }\n</style>\n\n<!------------------------------------------------------>\n<!-------------------- HTML TEMPLATE ------------------->\n<!------------------------------------------------------>\n<div class=\"train-app\">\n\n    <!-- === OVERVIEW LIST OF ALL TRAINS === -->\n    <div class=\"train-list\" ng-if=\"!selectedTrain\">\n        <div class=\"train-card\" ng-repeat=\"(trainId, train) in trains\" ng-click=\"selectTrain(trainId)\">\n            <h3>{{trainId}}\n                <!-- Delete button -->\n                <button class=\"delete-btn\"\n                        ng-click=\"deleteTrain(trainId); $event.stopPropagation()\"\n                        title=\"Delete train\">\n                  🗑️\n                </button>\n            </h3>\n            <div>\n                Movement Allowed:\n                <span class=\"led\" ng-class=\"{'led-green': train.movementAllowed, 'led-off': !train.movementAllowed}\"></span>\n            </div>\n            <div>\n                Do Not Power On:\n                <span class=\"led\" ng-class=\"{'led-red blink': train.doNotPowerOn, 'led-off': !train.doNotPowerOn}\"></span>\n            </div>\n            <div>\n                Parties Inside:\n                <span ng-repeat=\"i in [0, 1, 2] track by $index\" class=\"led\" ng-class=\"{'led-yellow': $index < train.partiesInside, 'led-off': $index >= train.partiesInside}\"></span>\n            </div>\n        </div>\n    </div>\n\n    <!-- === DETAILED MODAL VIEW FOR A SELECTED TRAIN === -->\n    <div class=\"modal-overlay\" ng-if=\"selectedTrain\" ng-click=\"deselectTrain($event)\">\n        <div class=\"modal-content\" ng-click=\"$event.stopPropagation()\">\n            <h2>Status for {{selectedTrain.trainId}}</h2>\n\n            <div class=\"control-grid\">\n                <!-- Switches -->\n                <div class=\"custom-switch\" ng-class=\"{active: selectedTrain.shedPlugFront}\"\n                    ng-click=\"sendAction(selectedTrain.trainId, 'shedPlugFront', !selectedTrain.shedPlugFront)\">\n                    <span>Shed Plug Front</span>\n                    <div class=\"switch-toggle\">\n                        <div class=\"slider\"></div>\n                    </div>\n                </div>\n                <div class=\"custom-switch\" ng-class=\"{active: selectedTrain.shedPlugRear}\"\n                    ng-click=\"sendAction(selectedTrain.trainId, 'shedPlugRear', !selectedTrain.shedPlugRear)\">\n                    <span>Shed Plug Rear</span>\n                    <div class=\"switch-toggle\">\n                        <div class=\"slider\"></div>\n                    </div>\n                </div>\n                <div class=\"custom-switch\" ng-class=\"{active: selectedTrain.wheelChock}\"\n                    ng-click=\"sendAction(selectedTrain.trainId, 'wheelChock', !selectedTrain.wheelChock)\">\n                    <span>Wheel Chock</span>\n                    <div class=\"switch-toggle\">\n                        <div class=\"slider\"></div>\n                    </div>\n                </div>\n                <div class=\"custom-switch\" ng-class=\"{active: selectedTrain.componentRemoved}\"\n                    ng-click=\"sendAction(selectedTrain.trainId, 'componentRemoved', !selectedTrain.componentRemoved)\">\n                    <span>Component Removed</span>\n                    <div class=\"switch-toggle\">\n                        <div class=\"slider\"></div>\n                    </div>\n                </div>\n                <div class=\"custom-switch\" ng-class=\"{active: selectedTrain.undercarriageWork}\"\n                    ng-click=\"sendAction(selectedTrain.trainId, 'undercarriageWork', !selectedTrain.undercarriageWork)\">\n                    <span>Undercarriage Work</span>\n                    <div class=\"switch-toggle\">\n                        <div class=\"slider\"></div>\n                    </div>\n                </div>\n                <div class=\"custom-switch\" ng-class=\"{active: selectedTrain.roofWork}\"\n                    ng-click=\"sendAction(selectedTrain.trainId, 'roofWork', !selectedTrain.roofWork)\">\n                    <span>Roof Work</span>\n                    <div class=\"switch-toggle\">\n                        <div class=\"slider\"></div>\n                    </div>\n                </div>\n\n                <!-- Slider -->\n                <div class=\"custom-slider-container\">\n                    <label>Parties Inside: {{selectedTrain.partiesInside}}</label>\n                    <input type=\"range\" min=\"0\" max=\"3\" step=\"1\" class=\"custom-slider\"\n                           ng-model=\"selectedTrain.partiesInside\"\n                           ng-mouseup=\"sendAction(selectedTrain.trainId, 'partiesInside', selectedTrain.partiesInside)\">\n                </div>\n            </div>\n\n        </div>\n    </div>\n</div>\n\n<!------------------------------------------------------>\n<!---------------- JAVASCRIPT/ANGULARJS ---------------->\n<!------------------------------------------------------>\n<script>\n    (function(scope) {\n    // Initialize local state\n    scope.trains = {};\n    scope.selectedTrain = null;\n\n    // Function to send an action back to Node-RED\n    scope.sendAction = function(trainId, property, value) {\n        scope.send({\n            topic: 'ui_action',\n            payload: {\n                trainId: trainId,\n                property: property,\n                value: value\n            },\n            socketid: '{{socketid}}'\n        });\n    };\n    // Function to send an action back to Node-RED\n    scope.sendAction = function(trainId, property, value) {\n        scope.send({\n            topic: 'ui_action',\n            payload: {\n                trainId: trainId,\n                property: property,\n                value: value\n            },\n            socketid: '{{socketid}}'\n        });\n    };\n\n    // Function to select a train and show the modal\n    scope.selectTrain = function(trainId) {\n        const trainData = angular.copy(scope.trains[trainId]);\n        trainData.trainId = trainId;\n        scope.selectedTrain = trainData;\n    };\n\n    // Helper to ask the backend to delete a train\n    scope.deleteTrain = function(trainId) {\n        scope.sendAction(trainId, 'deleteTrain', true);\n    };\n\n    // Function to select a train and show the modal\n    scope.selectTrain = function(trainId) {\n        const trainData = angular.copy(scope.trains[trainId]);\n        trainData.trainId = trainId;\n        scope.selectedTrain = trainData;\n    };\n\n    // Function to close the modal\n    scope.deselectTrain = function(event) {\n        if (event.target.classList.contains('modal-overlay')) {\n            scope.selectedTrain = null;\n        }\n    };\n\n    // This is the core logic: watch for incoming messages from Node-RED\n    scope.$watch('msg', function(msg) {\n        if (msg && msg.topic === 'update') {\n            // Update the main list of trains\n            scope.trains = msg.payload;\n\n            if (scope.selectedTrain) {\n                const selectedId = scope.selectedTrain.trainId;\n                if (scope.trains[selectedId]) {\n                    scope.selectTrain(selectedId);\n                } else {\n                    scope.selectedTrain = null;\n                }\n            }\n        }\n    });\n})(scope);\n</script>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 720,
+        "y": 260,
+        "wires": [
+            [
+                "f2b9da67c38e3f8a",
+                "4e7f757ff58214fd"
+            ]
+        ]
+    },
+    {
+        "id": "f951e699cefd1386",
+        "type": "mqtt in",
+        "z": "d367bcf9962b3ef0",
+        "name": "MQTT: train/+/status",
+        "topic": "train/+/status",
+        "qos": "1",
+        "datatype": "json",
+        "broker": "df35824a31ab051e",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 170,
+        "y": 300,
+        "wires": [
+            [
+                "8a499ef089c94329"
+            ]
+        ]
+    },
+    {
+        "id": "8a499ef089c94329",
+        "type": "function",
+        "z": "d367bcf9962b3ef0",
+        "name": "Update Flow Cache & Broadcast",
+        "func": "// This node is the heart of the backend logic.\n\n// 1. Get the current cache of all train statuses\nlet trains = flow.get('trains') || {};\n\n// 2. Get trainId from topic\nconst topicParts = (msg.topic || \"\").split('/');\nconst trainId = topicParts[1];\n\n// --- DEFINITIVE FIX FOR UNDEFINED TRAIN ---\n// If trainId is empty, null, or literally the string \"undefined\", kill the message.\nif (!trainId || trainId === 'undefined') { \n    return null; \n}\n\n// 3. Update the cache with the new status\ntrains[trainId] = msg.payload;\n\n// 4. Save the updated cache\nflow.set('trains', trains);\n\n// 5. Create a broadcast message to send the *entire* state to all clients\nlet broadcastMsg = {\n    topic: 'update',\n    payload: trains\n};\n\nreturn broadcastMsg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "// This code runs on deploy/startup\nflow.set('trains', {}); // Initialize an empty cache",
+        "finalize": "",
+        "libs": [],
+        "x": 430,
+        "y": 300,
+        "wires": [
+            [
+                "7a7fbb147340537a",
+                "9c1d0c1a98bf7239"
+            ]
+        ]
+    },
+    {
+        "id": "f9cd09412d8fbecf",
+        "type": "ui_ui_control",
+        "z": "d367bcf9962b3ef0",
+        "name": "On Client Connect",
+        "events": "connect",
+        "x": 170,
+        "y": 220,
+        "wires": [
+            [
+                "178ab38b0e5d56d7"
+            ]
+        ]
+    },
+    {
+        "id": "178ab38b0e5d56d7",
+        "type": "function",
+        "z": "d367bcf9962b3ef0",
+        "name": "Send Full State to New Client",
+        "func": "// When a new client connects, we send them the current complete state.\nlet trains = flow.get('trains') || {};\n\nmsg.topic = 'update';\nmsg.payload = trains;\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 440,
+        "y": 220,
+        "wires": [
+            [
+                "7a7fbb147340537a",
+                "460c4c6c3a19984d"
+            ]
+        ]
+    },
+    {
+        "id": "f2b9da67c38e3f8a",
+        "type": "function",
+        "z": "d367bcf9962b3ef0",
+        "name": "Process UI Action",
+        "func": "// This node receives actions from the ui_template\n\n// 1) two outputs defined on the node\n//    Output 1 → ui_template\n//    Output 2 → mqtt out\n\nif (msg.topic !== \"ui_action\") return null;\n\nconst { trainId, property, value } = msg.payload;\nlet trains = flow.get('trains') || {};\n\n// 2) DELETE branch: remove and update UI only\nif (property === 'deleteTrain') {\n    if (trains[trainId]) {\n        delete trains[trainId];\n        flow.set('trains', trains);\n    }\n    // [ sendToUI, sendToMQTT ]\n    return [\n        { topic: 'update', payload: trains },  // goes to ui_template\n        null                                   // nothing to MQTT\n    ];\n}\n\n// 3) NORMAL status-update branch\nlet currentStatus = trains[trainId] || { trainId };\ncurrentStatus[property] = value;\n\n// recalc safety logic…\nlet isBlocked =\n    (currentStatus.partiesInside > 0) ||\n    currentStatus.shedPlugFront ||\n    currentStatus.shedPlugRear ||\n    currentStatus.wheelChock ||\n    currentStatus.componentRemoved ||\n    currentStatus.undercarriageWork ||\n    currentStatus.roofWork;\n    \ncurrentStatus.doNotPowerOn = isBlocked;\ncurrentStatus.movementAllowed = !isBlocked;\n\n// save back\ntrains[trainId] = currentStatus;\nflow.set('trains', trains);\n\n// prepare MQTT message\nconst mqttMsg = {\n    ...msg,\n    topic: `train/${trainId}/status`,\n    payload: currentStatus\n};\n\n// If you want the UI to refresh on every change (optional), send to Out 1 as well:\nconst uiMsg = { topic: 'update', payload: trains };\n\n// Return [ UI-msg, MQTT-msg ]\nreturn [\n    uiMsg,     // goes to ui_template\n    mqttMsg    // goes to your MQTT out node\n];\n",
+        "outputs": 2,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 970,
+        "y": 260,
+        "wires": [
+            [
+                "2c8c4628f4e30a7e",
+                "7a7fbb147340537a"
+            ],
+            [
+                "2f8215fdbf7b26e3"
+            ]
+        ]
+    },
+    {
+        "id": "2f8215fdbf7b26e3",
+        "type": "function",
+        "z": "d367bcf9962b3ef0",
+        "name": "Format for Arduino",
+        "func": "if (msg.topic && msg.topic.includes('undefined')) {\n    return; \n}\n\nconst fullStatus = msg.payload;\n\n// Define the exact keys the Arduino expects, in order.\nconst requiredKeys = [\n    'partiesInside',\n    'shedPlugFront',\n    'shedPlugRear',\n    'wheelChock',\n    'componentRemoved',\n    'undercarriageWork',\n    'roofWork',\n    'doNotPowerOn',\n    'movementAllowed'\n];\n\nconst cleanPayload = {};\n\n// Build the new payload object with only the required keys.\nrequiredKeys.forEach(key => {\n    // Ensure the key exists in the source object, default to false if not.\n    if (fullStatus.hasOwnProperty(key)) {\n        cleanPayload[key] = fullStatus[key];\n    } else {\n        // This is a safety measure, should not happen in normal operation.\n        cleanPayload[key] = (key === 'partiesInside') ? 0 : false;\n    }\n});\n\n// Replace the old payload with the clean one.\nmsg.payload = cleanPayload;\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 970,
+        "y": 360,
+        "wires": [
+            [
+                "e4a7cad735e4d38f",
+                "c2c5bd80792930c7"
+            ]
+        ]
+    },
+    {
+        "id": "e4a7cad735e4d38f",
+        "type": "mqtt out",
+        "z": "d367bcf9962b3ef0",
+        "name": "Publish to MQTT",
+        "topic": "",
+        "qos": "1",
+        "retain": "true",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "df35824a31ab051e",
+        "x": 1190,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "c2c5bd80792930c7",
+        "type": "debug",
+        "z": "d367bcf9962b3ef0",
+        "name": "Final MQTT Output",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1210,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "161799493de57389",
+        "type": "inject",
+        "z": "d367bcf9962b3ef0",
+        "name": "Add a train ",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": "1",
+        "topic": "train/Train A/status",
+        "payload": "{\"movementAllowed\":false,\"doNotPowerOn\":true,\"partiesInside\":3,\"shedPlugFront\":true,\"shedPlugRear\":false,\"wheelChock\":true,\"componentRemoved\":false,\"undercarriageWork\":true,\"roofWork\":false}",
+        "payloadType": "json",
+        "x": 960,
+        "y": 440,
+        "wires": [
+            [
+                "e4a7cad735e4d38f"
+            ]
+        ]
+    },
+    {
+        "id": "460c4c6c3a19984d",
+        "type": "debug",
+        "z": "d367bcf9962b3ef0",
+        "name": "Send full state to new client",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 700,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "4e7f757ff58214fd",
+        "type": "debug",
+        "z": "d367bcf9962b3ef0",
+        "name": "output for the main template",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1040,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "9c1d0c1a98bf7239",
+        "type": "debug",
+        "z": "d367bcf9962b3ef0",
+        "name": "the broadcast msg ",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 710,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "2c8c4628f4e30a7e",
+        "type": "debug",
+        "z": "d367bcf9962b3ef0",
+        "name": "current status for the operated train",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1240,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "97bc3d9a5a0d3668",
+        "type": "mqtt in",
+        "z": "d367bcf9962b3ef0",
+        "name": "Emergency Sub (dynamic)",
+        "topic": "train/+/control/status",
+        "qos": "0",
+        "datatype": "json",
+        "broker": "df35824a31ab051e",
+        "nl": false,
+        "rap": false,
+        "inputs": 0,
+        "x": 190,
+        "y": 360,
+        "wires": [
+            [
+                "1deb374591d4ad97"
+            ]
+        ]
+    },
+    {
+        "id": "1deb374591d4ad97",
+        "type": "function",
+        "z": "d367bcf9962b3ef0",
+        "name": "Handle Emergency Stop",
+        "func": "// 1) Extract trainId\nconst parts = (msg.topic||\"\").split('/');\nif (parts.length < 4) return null;\nconst trainId = parts[1];\n\n// 2) Read the flag\nconst ignore = !!msg.payload.ignoreCommands;\n\n// 3) Broadcast to all dashboards\nmsg.topic = 'emergency';\nmsg.payload = { trainId, ignore };\ndelete msg.socketid;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 450,
+        "y": 360,
+        "wires": [
+            [
+                "7a7fbb147340537a"
+            ]
+        ]
+    },
+    {
+        "id": "da531a719a122833",
+        "type": "ui_template",
+        "z": "d367bcf9962b3ef0",
+        "group": "3d37492639762fc5",
+        "name": "log table",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "format": "<!------------------------------------------------------>\n<!------------------- CSS STYLES --------------------->\n<!------------------------------------------------------>\n<style>\n    .log-app {\n        font-family: Arial, sans-serif;\n        padding: 20px;\n        background: #222;\n        color: #eee;\n    }\n\n    .log-header {\n        display: flex;\n        justify-content: space-between;\n        align-items: center;\n        margin-bottom: 15px;\n    }\n\n    .log-header h3 {\n        margin: 0;\n        color: #00bfff;\n    }\n\n    .log-actions button {\n        background: #444;\n        color: #fff;\n        border: none;\n        padding: 8px 12px;\n        border-radius: 5px;\n        cursor: pointer;\n        margin-left: 10px;\n    }\n\n    .log-actions button:hover {\n        background: #0094ce;\n    }\n\n    .log-table {\n        width: 100%;\n        border-collapse: collapse;\n        margin-top: 10px;\n    }\n\n    .log-table th,\n    .log-table td {\n        border: 1px solid #555;\n        padding: 8px;\n        text-align: left;\n    }\n\n    .log-table th {\n        background: #333;\n        color: #00bfff;\n    }\n\n    .log-table tr:nth-child(even) {\n        background: #2a2a2a;\n    }\n\n    .log-table tr:hover {\n        background: #444;\n    }\n\n    .modal-overlay {\n        position: fixed;\n        top: 0;\n        left: 0;\n        width: 100%;\n        height: 100%;\n        background: rgba(0, 0, 0, 0.8);\n        display: flex;\n        justify-content: center;\n        align-items: center;\n        z-index: 999;\n    }\n\n    .modal-content.unauthorized {\n        background: #333;\n        color: #fff;\n        padding: 30px;\n        border-radius: 10px;\n        max-width: 400px;\n        width: 80%;\n        text-align: center;\n        border: 2px solid #ff3d00;\n        box-shadow: 0 0 10px #ff3d00;\n    }\n\n    .modal-content.confirm {\n        background: #333;\n        color: #fff;\n        padding: 30px;\n        border-radius: 10px;\n        max-width: 400px;\n        width: 80%;\n        text-align: center;\n        border: 2px solid #0094ce;\n        box-shadow: 0 0 10px #00bfff;\n    }\n\n    .modal-content button {\n        margin: 10px;\n        padding: 8px 16px;\n        background: #444;\n        color: white;\n        border: none;\n        border-radius: 5px;\n        cursor: pointer;\n    }\n\n    .modal-content button:hover {\n        background: #0094ce;\n    }\n</style>\n\n<!------------------------------------------------------>\n<!-------------------- HTML TEMPLATE ------------------>\n<!------------------------------------------------------>\n<div class=\"log-app\">\n    <div class=\"log-header\">\n        <h3>🧾 Operation Logs</h3>\n        <div class=\"log-actions\">\n            <button ng-click=\"send({topic:'refreshLogs'})\">🔄 Refresh</button>\n            <button ng-click=\"send({topic:'clearLogs'})\">🗑️ Clear</button>\n        </div>\n    </div>\n\n    <table class=\"log-table\" ng-if=\"logs.length > 0\">\n        <thead>\n            <tr>\n                <th>Timestamp</th>\n                <th>User</th>\n                <th>Train ID</th>\n                <th>Action</th>\n                <th>Value</th>\n            </tr>\n        </thead>\n        <tbody>\n            <tr ng-repeat=\"log in logs\">\n                <td>{{log.timestamp}}</td>\n                <td>{{log.user}}</td>\n                <td>{{log.trainId}}</td>\n                <td>{{log.action}}</td>\n                <td>{{log.value}}</td>\n            </tr>\n        </tbody>\n    </table>\n\n    <div ng-if=\"logs.length === 0\" style=\"text-align:center; margin-top:2rem; color:#ccc;\">\n        No logs available.\n    </div>\n</div>\n\n<!-- Unauthorized Modal -->\n<div class=\"modal-overlay\" ng-if=\"showUnauthorizedModal\">\n    <div class=\"modal-content unauthorized\">\n        <h2>⚠️ Only admin is authorised!</h2>\n        <div style=\"text-align: center; margin-top: 1rem;\">\n            <button ng-click=\"closeUnauthorized()\">OK</button>\n        </div>\n    </div>\n</div>\n\n<!-- Admin Confirm Modal -->\n<div class=\"modal-overlay\" ng-if=\"showConfirmModal\">\n    <div class=\"modal-content confirm\">\n        <h2>🗑️ Are you sure you want to clear all logs?</h2>\n        <div style=\"text-align: center; margin-top: 1rem;\">\n            <button ng-click=\"confirmClear()\">✅ Yes, Clear</button>\n            <button ng-click=\"cancelClear()\">❌ Cancel</button>\n        </div>\n    </div>\n</div>\n\n<!------------------------------------------------------>\n<!------------------ JAVASCRIPT LOGIC ----------------->\n<!------------------------------------------------------>\n<script>\n    (function(scope) {\n    scope.logs = [];\n    scope.showUnauthorizedModal = false;\n    scope.showConfirmModal = false;\n\n    scope.$watch('msg', function(msg) {\n        if (msg && msg.topic === \"iotLogs\") {\n            scope.logs = msg.payload || [];\n        }\n\n        if (msg && msg.topic === \"unauthorizedClear\") {\n            scope.showUnauthorizedModal = true;\n        }\n\n        if (msg && msg.topic === \"confirmClearLogs\") {\n            scope.showConfirmModal = true;\n        }\n    });\n\n    scope.closeUnauthorized = function() {\n        scope.showUnauthorizedModal = false;\n    };\n\n    scope.confirmClear = function() {\n        scope.send({\n            topic: \"confirmClearLogsFinal\",\n            socketid: \"{{socketid}}\"\n        });\n        scope.showConfirmModal = false;\n    };\n\n    scope.cancelClear = function() {\n        scope.showConfirmModal = false;\n    };\n\n    // Auto-refresh every 5 seconds\n    let intervalId = setInterval(() => {\n        scope.send({\n            topic: \"refreshLogs\",\n            socketid: \"{{socketid}}\"\n        });\n    }, 2000);\n\n    scope.$on('$destroy', function() {\n        clearInterval(intervalId);\n    });\n})(scope);\n</script>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 440,
+        "y": 1460,
+        "wires": [
+            [
+                "6d9fc52bc5ef550a"
+            ]
+        ]
+    },
+    {
+        "id": "e98b69f890ceaea1",
+        "type": "function",
+        "z": "d367bcf9962b3ef0",
+        "name": "Handle Log Refresh",
+        "func": "let logs = global.get(\"iotLogs\") || [];\nmsg.topic = \"iotLogs\";\nmsg.payload = logs;\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 860,
+        "y": 1420,
+        "wires": [
+            [
+                "da531a719a122833"
+            ]
+        ]
+    },
+    {
+        "id": "fc1cd6967c50042c",
+        "type": "function",
+        "z": "d367bcf9962b3ef0",
+        "name": "Handle Log Clear",
+        "func": "const sid = msg.socketid || \"\";\nconst user = flow.get(\"lastLoginUser_\" + sid);\n\nif (user !== \"admin\") {\n    return {\n        topic: \"unauthorizedClear\",\n        socketid: sid\n    };\n}\n\n// Show confirmation modal (instead of clearing immediately)\nreturn {\n    topic: \"confirmClearLogs\",\n    socketid: sid\n};\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 830,
+        "y": 1500,
+        "wires": [
+            [
+                "4b72dcced0734cd8",
+                "07ed214946d8e32a"
+            ]
+        ]
+    },
+    {
+        "id": "6d9fc52bc5ef550a",
+        "type": "switch",
+        "z": "d367bcf9962b3ef0",
+        "name": "",
+        "property": "topic",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "refreshLogs",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "clearLogs",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 630,
+        "y": 1460,
+        "wires": [
+            [
+                "e98b69f890ceaea1"
+            ],
+            [
+                "fc1cd6967c50042c"
+            ]
+        ]
+    },
+    {
+        "id": "4b72dcced0734cd8",
+        "type": "debug",
+        "z": "d367bcf9962b3ef0",
+        "name": "user clear log",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 900,
+        "y": 1580,
+        "wires": []
+    },
+    {
+        "id": "904fcf774b15beb8",
+        "type": "function",
+        "z": "d367bcf9962b3ef0",
+        "name": "clear final",
+        "func": "const sid = msg.socketid || \"\";\nconst user = flow.get(\"lastLoginUser_\" + sid);\n\nif (user === \"admin\") {\n    global.set(\"iotLogs\", []);\n    return {\n        topic: \"iotLogs\",\n        payload: [],\n        socketid: sid\n    };\n}\n\nreturn null;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1280,
+        "y": 1500,
+        "wires": [
+            [
+                "da531a719a122833",
+                "8069e119f7afa84b"
+            ]
+        ]
+    },
+    {
+        "id": "07ed214946d8e32a",
+        "type": "switch",
+        "z": "d367bcf9962b3ef0",
+        "name": "",
+        "property": "topic",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "unauthorizedClear",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "confirmClearLogs",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 1090,
+        "y": 1500,
+        "wires": [
+            [
+                "da531a719a122833"
+            ],
+            [
+                "904fcf774b15beb8"
+            ]
+        ]
+    },
+    {
+        "id": "8069e119f7afa84b",
+        "type": "debug",
+        "z": "d367bcf9962b3ef0",
+        "name": "clear final output",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1380,
+        "y": 1580,
+        "wires": []
+    },
+    {
+        "id": "login_group",
+        "type": "ui_group",
+        "name": "Login",
+        "tab": "login_tab",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": false
+    },
+    {
+        "id": "bd53f028b026c632",
+        "type": "ui_group",
+        "name": "Train Overview",
+        "tab": "1b3a4caf1282c08a",
+        "order": 1,
+        "disp": true,
+        "width": 6,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "c2727ab9de8ed51f",
+        "type": "ui_group",
+        "name": "Signup",
+        "tab": "10532dfd3639804f",
+        "order": 1,
+        "disp": true,
+        "width": 6,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "cc3f335b90adc946",
+        "type": "ui_group",
+        "name": "Detail Status Table",
+        "tab": "98374a4e0e219b36",
+        "order": 1,
+        "disp": true,
+        "width": 6,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "df35824a31ab051e",
+        "type": "mqtt-broker",
+        "name": "",
+        "broker": "broker.hivemq.com",
+        "port": 1883,
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": 4,
+        "keepalive": 60,
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "3d37492639762fc5",
+        "type": "ui_group",
+        "name": "Log record",
+        "tab": "1e695c5181229dd8",
+        "order": 1,
+        "disp": true,
+        "width": 6,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "login_tab",
+        "type": "ui_tab",
+        "name": "Login",
+        "icon": "lock",
+        "order": 0,
+        "disabled": false,
+        "hidden": true
+    },
+    {
+        "id": "1b3a4caf1282c08a",
+        "type": "ui_tab",
+        "name": "Home",
+        "icon": "dashboard",
+        "order": 1,
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "10532dfd3639804f",
+        "type": "ui_tab",
+        "name": "Signup",
+        "icon": "dashboard",
+        "order": 4,
+        "disabled": false,
+        "hidden": true
+    },
+    {
+        "id": "98374a4e0e219b36",
+        "type": "ui_tab",
+        "name": "Train Status Update",
+        "icon": "dashboard",
+        "order": 1
+    },
+    {
+        "id": "1e695c5181229dd8",
+        "type": "ui_tab",
+        "name": "Using log",
+        "icon": "dashboard",
+        "order": 5,
+        "disabled": false,
+        "hidden": false
+    }
+]
