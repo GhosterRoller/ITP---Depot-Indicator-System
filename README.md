@@ -24,15 +24,18 @@ train/<TRAIN_ID>/control/status
 to train/<TRAIN_ID>/control/status
 - Ensures the main board locks out normal commands until the hazard is cleared
 
-Node-RED Flow (flow.json)
+### Node-RED Flow (flow.json)
 - Provides a web UI for selecting train IDs and toggling status flags
 - Injects well-formed JSON messages with the retained flag
 - Routes messages back to the ESP32 boards on the private LAN
 
 Getting Started
-1. Set up the LAN
+1. Set up the LAN and Download the Node.js
 - Configure a router as a private 2.4 GHz access point (air-gapped).
 - Install Mosquitto on your host PC and open TCP port 1883 in the firewall.
+- Go website https://nodejs.org/ to download the LTS version (recommended for most users).
+- Node-RED is available as an npm package, install it globally in cmd with command : npm install -g --unsafe-perm node-red.
+- after downloading, activate it in cmd by typing "node-red".
 
 2. Flash the ESP32 boards
 - Edit each sketch’s top section to set your TRAIN_ID, Wi-Fi SSID/PASSWORD and broker IP.
@@ -40,7 +43,11 @@ Getting Started
 - Upload Wifi_connected.ino to the button board.
 
 3. Import the Node-RED flow
-- Open Node-RED in your browser, import flow.json, and deploy.
+- Activate node-red in cmd, go to the default link http://127.0.0.1:1880/
+- Open Node-RED in your browser, import Flow.json, and deploy.
+- Open the MQTT nodes and set the Server to the IPv4 address of the connected WLAN.
+- Once the texts under the nodes show connected, the connection is established.
 - Visit http://<host-ip>:1880/ui to control the panel.
+- Switch on/off the switches to check the IoT update on the LED.
 
 With these steps complete, you’ll have a fully functional, locally-isolated depot indicator system that is easy to extend and maintain.
