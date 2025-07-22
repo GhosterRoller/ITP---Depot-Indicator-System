@@ -1,6 +1,6 @@
 [
     {
-        "id": "d367bcf9962b3ef0",
+        "id": "e5c0773141d9748b",
         "type": "tab",
         "label": "Train Depot Control",
         "disabled": false,
@@ -8,9 +8,9 @@
         "env": []
     },
     {
-        "id": "d4d5af643b024af8",
+        "id": "c536f3d034fb2ea4",
         "type": "debug",
-        "z": "d367bcf9962b3ef0",
+        "z": "e5c0773141d9748b",
         "name": "return result 1",
         "active": true,
         "tosidebar": true,
@@ -25,9 +25,9 @@
         "wires": []
     },
     {
-        "id": "b7610fad70c50a12",
+        "id": "12826fe5d979a205",
         "type": "debug",
-        "z": "d367bcf9962b3ef0",
+        "z": "e5c0773141d9748b",
         "name": "return result 2",
         "active": true,
         "tosidebar": true,
@@ -42,9 +42,9 @@
         "wires": []
     },
     {
-        "id": "4c87c7e8e531fe2f",
+        "id": "afb72fc44f02b635",
         "type": "ui_template",
-        "z": "d367bcf9962b3ef0",
+        "z": "e5c0773141d9748b",
         "group": "login_group",
         "name": "Login Form",
         "order": 0,
@@ -60,15 +60,15 @@
         "y": 720,
         "wires": [
             [
-                "69da43728b59e134",
-                "904de3648243f626"
+                "ce050a026cc19579",
+                "d5e650516673cd92"
             ]
         ]
     },
     {
-        "id": "69da43728b59e134",
+        "id": "ce050a026cc19579",
         "type": "switch",
-        "z": "d367bcf9962b3ef0",
+        "z": "e5c0773141d9748b",
         "name": "Route Login Events",
         "property": "topic",
         "propertyType": "msg",
@@ -91,17 +91,17 @@
         "y": 720,
         "wires": [
             [
-                "0fcd7070aa82a593"
+                "4f89602780978e1a"
             ],
             [
-                "290022a491cb0eb4"
+                "bfe72b1aa32fce6c"
             ]
         ]
     },
     {
-        "id": "0fcd7070aa82a593",
+        "id": "4f89602780978e1a",
         "type": "function",
-        "z": "d367bcf9962b3ef0",
+        "z": "e5c0773141d9748b",
         "name": "Validate Credentials",
         "func": "const { user, pass } = msg.payload;\nconst sid = msg.socketid;\n\n// Get user list\nlet users = global.get(\"users\") || {};\n\nif (users[user] && users[user].password === pass) {\n    // Login success\n    flow.set(\"loggedIn_\" + sid, true);\n    flow.set(\"lastLoginUser_\" + sid, user);\n\n    // Instead of returning the ui_control directly, pass through for delay\n    return {\n        payload: \"Login successful\", // or just use a neutral message\n        topic: \"loginSuccess\",\n        socketid: sid\n    };\n\n} else {\n    return {\n        payload: \"Invalid credentials\",\n        topic: \"loginError\",\n        socketid: sid\n    };\n}\n",
         "outputs": 1,
@@ -114,14 +114,14 @@
         "y": 660,
         "wires": [
             [
-                "6acb163d09adc6d6"
+                "35ba094fe7767e09"
             ]
         ]
     },
     {
-        "id": "6acb163d09adc6d6",
+        "id": "35ba094fe7767e09",
         "type": "function",
-        "z": "d367bcf9962b3ef0",
+        "z": "e5c0773141d9748b",
         "name": "Return Result",
         "func": "if (msg.topic === \"loginError\") {\n    return [msg, null]; // Send to login_template for display\n}\n\nif (msg.topic === \"loginSuccess\") {\n    return [null, msg]; // Send to delay before tab switch\n}\n",
         "outputs": 2,
@@ -134,21 +134,21 @@
         "y": 660,
         "wires": [
             [
-                "4c87c7e8e531fe2f",
-                "d4d5af643b024af8",
-                "9d53bbc4687bd4d8"
+                "afb72fc44f02b635",
+                "c536f3d034fb2ea4",
+                "d3be6f98ab7e01f8"
             ],
             [
-                "b7610fad70c50a12",
-                "6c14fa07db16c5fe",
-                "3966bfce265c9188"
+                "12826fe5d979a205",
+                "4cdf944c17c5fa7d",
+                "620c53e63ba563c8"
             ]
         ]
     },
     {
-        "id": "290022a491cb0eb4",
+        "id": "bfe72b1aa32fce6c",
         "type": "change",
-        "z": "d367bcf9962b3ef0",
+        "z": "e5c0773141d9748b",
         "name": "Clear Error Now",
         "rules": [
             {
@@ -170,14 +170,14 @@
         "y": 780,
         "wires": [
             [
-                "4c87c7e8e531fe2f"
+                "afb72fc44f02b635"
             ]
         ]
     },
     {
-        "id": "3cd34ad425f57463",
+        "id": "6b451c65628165ef",
         "type": "ui_ui_control",
-        "z": "d367bcf9962b3ef0",
+        "z": "e5c0773141d9748b",
         "name": "Redirect to Home",
         "events": "all",
         "x": 1510,
@@ -187,9 +187,9 @@
         ]
     },
     {
-        "id": "9d53bbc4687bd4d8",
+        "id": "d3be6f98ab7e01f8",
         "type": "delay",
-        "z": "d367bcf9962b3ef0",
+        "z": "e5c0773141d9748b",
         "name": "",
         "pauseType": "delay",
         "timeout": "3",
@@ -207,14 +207,14 @@
         "y": 780,
         "wires": [
             [
-                "290022a491cb0eb4"
+                "bfe72b1aa32fce6c"
             ]
         ]
     },
     {
-        "id": "dc7e3bab6c12125c",
+        "id": "293ff1ce2b03b272",
         "type": "ui_button",
-        "z": "d367bcf9962b3ef0",
+        "z": "e5c0773141d9748b",
         "name": "Logout Button",
         "group": "bd53f028b026c632",
         "order": 99,
@@ -235,14 +235,14 @@
         "y": 940,
         "wires": [
             [
-                "285a935c0c71ca09"
+                "3e975e3b437ec338"
             ]
         ]
     },
     {
-        "id": "285a935c0c71ca09",
+        "id": "3e975e3b437ec338",
         "type": "function",
-        "z": "d367bcf9962b3ef0",
+        "z": "e5c0773141d9748b",
         "name": "Clear Session",
         "func": "const sid = msg.socketid;\n\nflow.set(\"loggedIn_\" + sid, false);\nflow.set(\"lastLoginUser_\" + sid, null);\nflow.set(\"selectedTrainId_\" + sid, null);\n\nreturn {\n    payload: { tab: \"Login\" },\n    topic: \"ui_control\",\n    socketid: sid\n};",
         "outputs": 1,
@@ -255,14 +255,14 @@
         "y": 940,
         "wires": [
             [
-                "900c5a30b10b9017"
+                "3c0d3239741c67de"
             ]
         ]
     },
     {
-        "id": "900c5a30b10b9017",
+        "id": "3c0d3239741c67de",
         "type": "ui_ui_control",
-        "z": "d367bcf9962b3ef0",
+        "z": "e5c0773141d9748b",
         "name": "Redirect to Login",
         "events": "all",
         "x": 820,
@@ -272,9 +272,9 @@
         ]
     },
     {
-        "id": "aa64a5592526c2ee",
+        "id": "0add83ae02a1598b",
         "type": "ui_template",
-        "z": "d367bcf9962b3ef0",
+        "z": "e5c0773141d9748b",
         "group": "c2727ab9de8ed51f",
         "name": "Signup Form",
         "order": 0,
@@ -290,15 +290,15 @@
         "y": 1080,
         "wires": [
             [
-                "cfb25c55d61fa5d1",
-                "36d4273de2336774"
+                "65cc9fd7f796b9f3",
+                "6e0e5226659ada72"
             ]
         ]
     },
     {
-        "id": "cfb25c55d61fa5d1",
+        "id": "65cc9fd7f796b9f3",
         "type": "switch",
-        "z": "d367bcf9962b3ef0",
+        "z": "e5c0773141d9748b",
         "name": "Route Signup Events",
         "property": "topic",
         "propertyType": "msg",
@@ -321,17 +321,17 @@
         "y": 1080,
         "wires": [
             [
-                "8cd7227d92773d92"
+                "168280c6adb49d6a"
             ],
             [
-                "6ad3ee10f80dc83d"
+                "99aa8245a1855d3f"
             ]
         ]
     },
     {
-        "id": "8cd7227d92773d92",
+        "id": "168280c6adb49d6a",
         "type": "function",
-        "z": "d367bcf9962b3ef0",
+        "z": "e5c0773141d9748b",
         "name": "Register New User",
         "func": "const { user, pass } = msg.payload;\nif (!user || !pass) return null;\n\nlet users = global.get(\"users\") || {};\n\nif (users[user]) {\n    return {\n        payload: \"Username already exists.\",\n        topic: \"signupError\",\n        socketid: msg.socketid\n    };\n}\n\n// Save new user\nusers[user] = {\n    password: pass,\n    createdAt: new Date().toISOString()\n};\nglobal.set(\"users\", users);\n\nreturn {\n    payload: { tab: \"Login\" },\n    topic: \"ui_control\",\n    socketid: msg.socketid\n};",
         "outputs": 1,
@@ -339,14 +339,14 @@
         "y": 1040,
         "wires": [
             [
-                "10ea73b79d857ce8"
+                "e8c13ece64fcf1c8"
             ]
         ]
     },
     {
-        "id": "10ea73b79d857ce8",
+        "id": "e8c13ece64fcf1c8",
         "type": "function",
-        "z": "d367bcf9962b3ef0",
+        "z": "e5c0773141d9748b",
         "name": "Route Signup Result",
         "func": "if (msg.topic === \"signupError\") {\n    return [msg, null];\n}\nreturn [null, msg];",
         "outputs": 2,
@@ -354,18 +354,18 @@
         "y": 1080,
         "wires": [
             [
-                "aa64a5592526c2ee",
-                "7c55dd08a800c221"
+                "0add83ae02a1598b",
+                "b8ea11740123d94a"
             ],
             [
-                "6fc6d34b74e7f92f"
+                "fabcc4047cffd3c3"
             ]
         ]
     },
     {
-        "id": "6ad3ee10f80dc83d",
+        "id": "99aa8245a1855d3f",
         "type": "change",
-        "z": "d367bcf9962b3ef0",
+        "z": "e5c0773141d9748b",
         "name": "Clear Signup Error",
         "rules": [
             {
@@ -387,14 +387,14 @@
         "y": 1200,
         "wires": [
             [
-                "aa64a5592526c2ee"
+                "0add83ae02a1598b"
             ]
         ]
     },
     {
-        "id": "6fc6d34b74e7f92f",
+        "id": "fabcc4047cffd3c3",
         "type": "ui_ui_control",
-        "z": "d367bcf9962b3ef0",
+        "z": "e5c0773141d9748b",
         "name": "Back to Login Tab",
         "events": "all",
         "x": 1610,
@@ -404,9 +404,9 @@
         ]
     },
     {
-        "id": "7c55dd08a800c221",
+        "id": "b8ea11740123d94a",
         "type": "delay",
-        "z": "d367bcf9962b3ef0",
+        "z": "e5c0773141d9748b",
         "name": "",
         "pauseType": "delay",
         "timeout": "5",
@@ -424,14 +424,14 @@
         "y": 1200,
         "wires": [
             [
-                "6ad3ee10f80dc83d"
+                "99aa8245a1855d3f"
             ]
         ]
     },
     {
-        "id": "904de3648243f626",
+        "id": "d5e650516673cd92",
         "type": "switch",
-        "z": "d367bcf9962b3ef0",
+        "z": "e5c0773141d9748b",
         "name": "",
         "property": "topic",
         "propertyType": "msg",
@@ -449,14 +449,14 @@
         "y": 660,
         "wires": [
             [
-                "2c92e64b6007d61d"
+                "151b2b9da09e9f85"
             ]
         ]
     },
     {
-        "id": "2c92e64b6007d61d",
+        "id": "151b2b9da09e9f85",
         "type": "function",
-        "z": "d367bcf9962b3ef0",
+        "z": "e5c0773141d9748b",
         "name": "go to signup",
         "func": "return {\n    payload: { tab: \"Signup\" },\n    topic: \"ui_control\",\n    socketid: msg.socketid\n};\n",
         "outputs": 1,
@@ -469,14 +469,14 @@
         "y": 660,
         "wires": [
             [
-                "c7f42734bdd52c37"
+                "5f8e44bc8bca4692"
             ]
         ]
     },
     {
-        "id": "c7f42734bdd52c37",
+        "id": "5f8e44bc8bca4692",
         "type": "ui_ui_control",
-        "z": "d367bcf9962b3ef0",
+        "z": "e5c0773141d9748b",
         "name": "",
         "events": "all",
         "x": 820,
@@ -486,9 +486,9 @@
         ]
     },
     {
-        "id": "36d4273de2336774",
+        "id": "6e0e5226659ada72",
         "type": "switch",
-        "z": "d367bcf9962b3ef0",
+        "z": "e5c0773141d9748b",
         "name": "",
         "property": "topic",
         "propertyType": "msg",
@@ -506,14 +506,14 @@
         "y": 1020,
         "wires": [
             [
-                "0bfcc3d1f43e890b"
+                "aa40b4bd35cdea90"
             ]
         ]
     },
     {
-        "id": "0bfcc3d1f43e890b",
+        "id": "aa40b4bd35cdea90",
         "type": "function",
-        "z": "d367bcf9962b3ef0",
+        "z": "e5c0773141d9748b",
         "name": "go to signup",
         "func": "return {\n    payload: { tab: \"Login\" },\n    topic: \"ui_control\",\n    socketid: msg.socketid\n};\n",
         "outputs": 1,
@@ -526,14 +526,14 @@
         "y": 1020,
         "wires": [
             [
-                "e087d7cf27ea8a72"
+                "faf114f6b03432d7"
             ]
         ]
     },
     {
-        "id": "e087d7cf27ea8a72",
+        "id": "faf114f6b03432d7",
         "type": "ui_ui_control",
-        "z": "d367bcf9962b3ef0",
+        "z": "e5c0773141d9748b",
         "name": "",
         "events": "all",
         "x": 760,
@@ -543,9 +543,9 @@
         ]
     },
     {
-        "id": "6c96ef1740628436",
+        "id": "957b5efa3237ab45",
         "type": "function",
-        "z": "d367bcf9962b3ef0",
+        "z": "e5c0773141d9748b",
         "name": "go home",
         "func": "return {\n  payload: { tab: \"Home\" },\n  topic: \"ui_control\",\n  socketid: msg.socketid\n};\n",
         "outputs": 1,
@@ -558,28 +558,28 @@
         "y": 580,
         "wires": [
             [
-                "3cd34ad425f57463"
+                "6b451c65628165ef"
             ]
         ]
     },
     {
-        "id": "9da0fe800735a9d3",
+        "id": "a9edaeae6aac8cd4",
         "type": "ui_ui_control",
-        "z": "d367bcf9962b3ef0",
+        "z": "e5c0773141d9748b",
         "name": "Tab Trigger",
         "events": "all",
         "x": 250,
         "y": 1280,
         "wires": [
             [
-                "c4e3a58fbe378884"
+                "df4933423b226805"
             ]
         ]
     },
     {
-        "id": "c4e3a58fbe378884",
+        "id": "df4933423b226805",
         "type": "function",
-        "z": "d367bcf9962b3ef0",
+        "z": "e5c0773141d9748b",
         "name": "Inject Login Status",
         "func": "let sid = msg.socketid;\nmsg.loggedIn = flow.get(\"loggedIn_\" + sid) || false;\nreturn msg;",
         "outputs": 1,
@@ -592,15 +592,15 @@
         "y": 1280,
         "wires": [
             [
-                "abd049e549c60d4f",
-                "4363bdbce2decd9e"
+                "c54b3a9b15dd1537",
+                "0ad2bed8e2ccccb7"
             ]
         ]
     },
     {
-        "id": "abd049e549c60d4f",
+        "id": "c54b3a9b15dd1537",
         "type": "ui_template",
-        "z": "d367bcf9962b3ef0",
+        "z": "e5c0773141d9748b",
         "group": "bd53f028b026c632",
         "name": "Guard Home Template",
         "order": 3,
@@ -616,14 +616,14 @@
         "y": 1280,
         "wires": [
             [
-                "683f0be9f0b8e23c"
+                "1f49ed240daddfa4"
             ]
         ]
     },
     {
-        "id": "4363bdbce2decd9e",
+        "id": "0ad2bed8e2ccccb7",
         "type": "ui_template",
-        "z": "d367bcf9962b3ef0",
+        "z": "e5c0773141d9748b",
         "group": "cc3f335b90adc946",
         "name": "Guard Train Tab Template",
         "order": 1,
@@ -639,14 +639,14 @@
         "y": 1340,
         "wires": [
             [
-                "897bc5b52b0b96ca"
+                "16c8b391c63318cc"
             ]
         ]
     },
     {
-        "id": "897bc5b52b0b96ca",
+        "id": "16c8b391c63318cc",
         "type": "function",
-        "z": "d367bcf9962b3ef0",
+        "z": "e5c0773141d9748b",
         "name": "Redirect Train to Login",
         "func": "return {\n    payload: { tab: \"Login\" },\n    topic: \"ui_control\",\n    socketid: msg.socketid\n};",
         "outputs": 1,
@@ -654,14 +654,14 @@
         "y": 1340,
         "wires": [
             [
-                "3011df65ab1c6992"
+                "08c4e6f27c4f8dfe"
             ]
         ]
     },
     {
-        "id": "683f0be9f0b8e23c",
+        "id": "1f49ed240daddfa4",
         "type": "function",
-        "z": "d367bcf9962b3ef0",
+        "z": "e5c0773141d9748b",
         "name": "Redirect to Login",
         "func": "return {\n    payload: { tab: \"Login\" },\n    topic: \"ui_control\",\n    socketid: msg.socketid\n};",
         "outputs": 1,
@@ -674,14 +674,14 @@
         "y": 1280,
         "wires": [
             [
-                "3ad8892cee0f439f"
+                "921dd601d6747f06"
             ]
         ]
     },
     {
-        "id": "3ad8892cee0f439f",
+        "id": "921dd601d6747f06",
         "type": "ui_ui_control",
-        "z": "d367bcf9962b3ef0",
+        "z": "e5c0773141d9748b",
         "name": "Home Tab Redirect",
         "events": "all",
         "x": 1330,
@@ -691,9 +691,9 @@
         ]
     },
     {
-        "id": "3011df65ab1c6992",
+        "id": "08c4e6f27c4f8dfe",
         "type": "ui_ui_control",
-        "z": "d367bcf9962b3ef0",
+        "z": "e5c0773141d9748b",
         "name": "Train Tab Redirect",
         "events": "all",
         "x": 1350,
@@ -703,9 +703,9 @@
         ]
     },
     {
-        "id": "6c14fa07db16c5fe",
+        "id": "4cdf944c17c5fa7d",
         "type": "function",
-        "z": "d367bcf9962b3ef0",
+        "z": "e5c0773141d9748b",
         "name": "Force Guard Refresh",
         "func": "return {\n  topic: \"triggerRefreshGuard\",\n  socketid: msg.socketid\n};\n",
         "outputs": 1,
@@ -718,14 +718,14 @@
         "y": 920,
         "wires": [
             [
-                "c4e3a58fbe378884"
+                "df4933423b226805"
             ]
         ]
     },
     {
-        "id": "3966bfce265c9188",
+        "id": "620c53e63ba563c8",
         "type": "delay",
-        "z": "d367bcf9962b3ef0",
+        "z": "e5c0773141d9748b",
         "name": "Wait to render",
         "pauseType": "delay",
         "timeout": "200",
@@ -743,14 +743,14 @@
         "y": 660,
         "wires": [
             [
-                "6c96ef1740628436"
+                "957b5efa3237ab45"
             ]
         ]
     },
     {
-        "id": "7a7fbb147340537a",
+        "id": "03cd447b3f01e395",
         "type": "ui_template",
-        "z": "d367bcf9962b3ef0",
+        "z": "e5c0773141d9748b",
         "group": "bd53f028b026c632",
         "name": "Main Template",
         "order": 2,
@@ -766,15 +766,15 @@
         "y": 260,
         "wires": [
             [
-                "f2b9da67c38e3f8a",
-                "4e7f757ff58214fd"
+                "9925905a26698473",
+                "8a602bc961e58bf9"
             ]
         ]
     },
     {
-        "id": "f951e699cefd1386",
+        "id": "78dcaab1a2f6da6b",
         "type": "mqtt in",
-        "z": "d367bcf9962b3ef0",
+        "z": "e5c0773141d9748b",
         "name": "MQTT: train/+/status",
         "topic": "train/+/status",
         "qos": "1",
@@ -788,14 +788,14 @@
         "y": 300,
         "wires": [
             [
-                "8a499ef089c94329"
+                "feaa02bcb2e6895c"
             ]
         ]
     },
     {
-        "id": "8a499ef089c94329",
+        "id": "feaa02bcb2e6895c",
         "type": "function",
-        "z": "d367bcf9962b3ef0",
+        "z": "e5c0773141d9748b",
         "name": "Update Flow Cache & Broadcast",
         "func": "// This node is the heart of the backend logic.\n\n// 1. Get the current cache of all train statuses\nlet trains = flow.get('trains') || {};\n\n// 2. Get trainId from topic\nconst topicParts = (msg.topic || \"\").split('/');\nconst trainId = topicParts[1];\n\n// --- DEFINITIVE FIX FOR UNDEFINED TRAIN ---\n// If trainId is empty, null, or literally the string \"undefined\", kill the message.\nif (!trainId || trainId === 'undefined') { \n    return null; \n}\n\n// 3. Update the cache with the new status\ntrains[trainId] = msg.payload;\n\n// 4. Save the updated cache\nflow.set('trains', trains);\n\n// 5. Create a broadcast message to send the *entire* state to all clients\nlet broadcastMsg = {\n    topic: 'update',\n    payload: trains\n};\n\nreturn broadcastMsg;",
         "outputs": 1,
@@ -808,29 +808,29 @@
         "y": 300,
         "wires": [
             [
-                "7a7fbb147340537a",
-                "9c1d0c1a98bf7239"
+                "03cd447b3f01e395",
+                "0909825564428e2f"
             ]
         ]
     },
     {
-        "id": "f9cd09412d8fbecf",
+        "id": "6463f3b6f852397b",
         "type": "ui_ui_control",
-        "z": "d367bcf9962b3ef0",
+        "z": "e5c0773141d9748b",
         "name": "On Client Connect",
         "events": "connect",
         "x": 170,
         "y": 220,
         "wires": [
             [
-                "178ab38b0e5d56d7"
+                "ec76abc309ec68d1"
             ]
         ]
     },
     {
-        "id": "178ab38b0e5d56d7",
+        "id": "ec76abc309ec68d1",
         "type": "function",
-        "z": "d367bcf9962b3ef0",
+        "z": "e5c0773141d9748b",
         "name": "Send Full State to New Client",
         "func": "// When a new client connects, we send them the current complete state.\nlet trains = flow.get('trains') || {};\n\nmsg.topic = 'update';\nmsg.payload = trains;\n\nreturn msg;",
         "outputs": 1,
@@ -843,17 +843,17 @@
         "y": 220,
         "wires": [
             [
-                "7a7fbb147340537a",
-                "460c4c6c3a19984d"
+                "03cd447b3f01e395",
+                "2c1912bc28c7fd3c"
             ]
         ]
     },
     {
-        "id": "f2b9da67c38e3f8a",
+        "id": "9925905a26698473",
         "type": "function",
-        "z": "d367bcf9962b3ef0",
+        "z": "e5c0773141d9748b",
         "name": "Process UI Action",
-        "func": "// This node receives actions from the ui_template\n\n// 1) two outputs defined on the node\n//    Output 1 → ui_template\n//    Output 2 → mqtt out\n\nif (msg.topic !== \"ui_action\") return null;\n\nconst { trainId, property, value } = msg.payload;\nlet trains = flow.get('trains') || {};\n\n// 2) DELETE branch: remove and update UI only\nif (property === 'deleteTrain') {\n    if (trains[trainId]) {\n        delete trains[trainId];\n        flow.set('trains', trains);\n    }\n    // [ sendToUI, sendToMQTT ]\n    return [\n        { topic: 'update', payload: trains },  // goes to ui_template\n        null                                   // nothing to MQTT\n    ];\n}\n\n// 3) NORMAL status-update branch\nlet currentStatus = trains[trainId] || { trainId };\ncurrentStatus[property] = value;\n\n// recalc safety logic…\nlet isBlocked =\n    (currentStatus.partiesInside > 0) ||\n    currentStatus.shedPlugFront ||\n    currentStatus.shedPlugRear ||\n    currentStatus.wheelChock ||\n    currentStatus.componentRemoved ||\n    currentStatus.undercarriageWork ||\n    currentStatus.roofWork;\n    \ncurrentStatus.doNotPowerOn = isBlocked;\ncurrentStatus.movementAllowed = !isBlocked;\n\n// save back\ntrains[trainId] = currentStatus;\nflow.set('trains', trains);\n\n// prepare MQTT message\nconst mqttMsg = {\n    ...msg,\n    topic: `train/${trainId}/status`,\n    payload: currentStatus\n};\n\n// If you want the UI to refresh on every change (optional), send to Out 1 as well:\nconst uiMsg = { topic: 'update', payload: trains };\n\n// Return [ UI-msg, MQTT-msg ]\nreturn [\n    uiMsg,     // goes to ui_template\n    mqttMsg    // goes to your MQTT out node\n];\n",
+        "func": "// This node receives actions from the ui_template\n\n// 1) two outputs defined on the node\n//    Output 1 → ui_template\n//    Output 2 → mqtt out\n\nif (msg.topic !== \"ui_action\") return null;\n\nconst { trainId, property, value } = msg.payload;\nlet trains = flow.get('trains') || {};\nlet logs = global.get(\"iotLogs\") || [];\n\nlogs.unshift({\n    timestamp: new Date().toLocaleString(),\n    user: flow.get(\"lastLoginUser_\" + msg.socketid) || \"unknown\",\n    trainId: trainId,\n    action: property,\n    value: value\n});\n\nglobal.set(\"iotLogs\", logs);\n// 2) DELETE branch: remove and update UI only\nif (property === 'deleteTrain') {\n    if (trains[trainId]) {\n        delete trains[trainId];\n        flow.set('trains', trains);\n    }\n    // [ sendToUI, sendToMQTT ]\n    return [\n        { topic: 'update', payload: trains },  // goes to ui_template\n        null                                   // nothing to MQTT\n    ];\n}\n\n// 3) NORMAL status-update branch\nlet currentStatus = trains[trainId] || { trainId };\ncurrentStatus[property] = value;\n\n// recalc safety logic…\nlet isBlocked =\n    (currentStatus.partiesInside > 0) ||\n    currentStatus.shedPlugFront ||\n    currentStatus.shedPlugRear ||\n    currentStatus.wheelChock ||\n    currentStatus.componentRemoved ||\n    currentStatus.undercarriageWork ||\n    currentStatus.roofWork;\n    \ncurrentStatus.doNotPowerOn = isBlocked;\ncurrentStatus.movementAllowed = !isBlocked;\n\n// save back\ntrains[trainId] = currentStatus;\nflow.set('trains', trains);\n\n// prepare MQTT message\nconst mqttMsg = {\n    ...msg,\n    topic: `train/${trainId}/status`,\n    payload: currentStatus\n};\n\n// If you want the UI to refresh on every change (optional), send to Out 1 as well:\nconst uiMsg = { topic: 'update', payload: trains };\n\n// Return [ UI-msg, MQTT-msg ]\nreturn [\n    uiMsg,     // goes to ui_template\n    mqttMsg    // goes to your MQTT out node\n];\n",
         "outputs": 2,
         "timeout": 0,
         "noerr": 0,
@@ -864,18 +864,18 @@
         "y": 260,
         "wires": [
             [
-                "2c8c4628f4e30a7e",
-                "7a7fbb147340537a"
+                "4a1afccb5b2f39c9",
+                "03cd447b3f01e395"
             ],
             [
-                "2f8215fdbf7b26e3"
+                "311f8adc4e692b4c"
             ]
         ]
     },
     {
-        "id": "2f8215fdbf7b26e3",
+        "id": "311f8adc4e692b4c",
         "type": "function",
-        "z": "d367bcf9962b3ef0",
+        "z": "e5c0773141d9748b",
         "name": "Format for Arduino",
         "func": "if (msg.topic && msg.topic.includes('undefined')) {\n    return; \n}\n\nconst fullStatus = msg.payload;\n\n// Define the exact keys the Arduino expects, in order.\nconst requiredKeys = [\n    'partiesInside',\n    'shedPlugFront',\n    'shedPlugRear',\n    'wheelChock',\n    'componentRemoved',\n    'undercarriageWork',\n    'roofWork',\n    'doNotPowerOn',\n    'movementAllowed'\n];\n\nconst cleanPayload = {};\n\n// Build the new payload object with only the required keys.\nrequiredKeys.forEach(key => {\n    // Ensure the key exists in the source object, default to false if not.\n    if (fullStatus.hasOwnProperty(key)) {\n        cleanPayload[key] = fullStatus[key];\n    } else {\n        // This is a safety measure, should not happen in normal operation.\n        cleanPayload[key] = (key === 'partiesInside') ? 0 : false;\n    }\n});\n\n// Replace the old payload with the clean one.\nmsg.payload = cleanPayload;\n\nreturn msg;",
         "outputs": 1,
@@ -888,15 +888,15 @@
         "y": 360,
         "wires": [
             [
-                "e4a7cad735e4d38f",
-                "c2c5bd80792930c7"
+                "a56ab138e10ec566",
+                "48b7aa593e03e9eb"
             ]
         ]
     },
     {
-        "id": "e4a7cad735e4d38f",
+        "id": "a56ab138e10ec566",
         "type": "mqtt out",
-        "z": "d367bcf9962b3ef0",
+        "z": "e5c0773141d9748b",
         "name": "Publish to MQTT",
         "topic": "",
         "qos": "1",
@@ -912,9 +912,9 @@
         "wires": []
     },
     {
-        "id": "c2c5bd80792930c7",
+        "id": "48b7aa593e03e9eb",
         "type": "debug",
-        "z": "d367bcf9962b3ef0",
+        "z": "e5c0773141d9748b",
         "name": "Final MQTT Output",
         "active": true,
         "tosidebar": true,
@@ -929,9 +929,9 @@
         "wires": []
     },
     {
-        "id": "161799493de57389",
+        "id": "8ecf701ff34dcbcf",
         "type": "inject",
-        "z": "d367bcf9962b3ef0",
+        "z": "e5c0773141d9748b",
         "name": "Add a train ",
         "props": [
             {
@@ -953,14 +953,14 @@
         "y": 440,
         "wires": [
             [
-                "e4a7cad735e4d38f"
+                "a56ab138e10ec566"
             ]
         ]
     },
     {
-        "id": "460c4c6c3a19984d",
+        "id": "2c1912bc28c7fd3c",
         "type": "debug",
-        "z": "d367bcf9962b3ef0",
+        "z": "e5c0773141d9748b",
         "name": "Send full state to new client",
         "active": true,
         "tosidebar": true,
@@ -975,9 +975,9 @@
         "wires": []
     },
     {
-        "id": "4e7f757ff58214fd",
+        "id": "8a602bc961e58bf9",
         "type": "debug",
-        "z": "d367bcf9962b3ef0",
+        "z": "e5c0773141d9748b",
         "name": "output for the main template",
         "active": true,
         "tosidebar": true,
@@ -992,9 +992,9 @@
         "wires": []
     },
     {
-        "id": "9c1d0c1a98bf7239",
+        "id": "0909825564428e2f",
         "type": "debug",
-        "z": "d367bcf9962b3ef0",
+        "z": "e5c0773141d9748b",
         "name": "the broadcast msg ",
         "active": true,
         "tosidebar": true,
@@ -1009,9 +1009,9 @@
         "wires": []
     },
     {
-        "id": "2c8c4628f4e30a7e",
+        "id": "4a1afccb5b2f39c9",
         "type": "debug",
-        "z": "d367bcf9962b3ef0",
+        "z": "e5c0773141d9748b",
         "name": "current status for the operated train",
         "active": true,
         "tosidebar": true,
@@ -1026,9 +1026,9 @@
         "wires": []
     },
     {
-        "id": "97bc3d9a5a0d3668",
+        "id": "33235f632502fddf",
         "type": "mqtt in",
-        "z": "d367bcf9962b3ef0",
+        "z": "e5c0773141d9748b",
         "name": "Emergency Sub (dynamic)",
         "topic": "train/+/control/status",
         "qos": "0",
@@ -1041,14 +1041,14 @@
         "y": 360,
         "wires": [
             [
-                "1deb374591d4ad97"
+                "554b05417cd2933f"
             ]
         ]
     },
     {
-        "id": "1deb374591d4ad97",
+        "id": "554b05417cd2933f",
         "type": "function",
-        "z": "d367bcf9962b3ef0",
+        "z": "e5c0773141d9748b",
         "name": "Handle Emergency Stop",
         "func": "// 1) Extract trainId\nconst parts = (msg.topic||\"\").split('/');\nif (parts.length < 4) return null;\nconst trainId = parts[1];\n\n// 2) Read the flag\nconst ignore = !!msg.payload.ignoreCommands;\n\n// 3) Broadcast to all dashboards\nmsg.topic = 'emergency';\nmsg.payload = { trainId, ignore };\ndelete msg.socketid;\nreturn msg;",
         "outputs": 1,
@@ -1057,14 +1057,14 @@
         "y": 360,
         "wires": [
             [
-                "7a7fbb147340537a"
+                "03cd447b3f01e395"
             ]
         ]
     },
     {
-        "id": "da531a719a122833",
+        "id": "8aef8674529f202a",
         "type": "ui_template",
-        "z": "d367bcf9962b3ef0",
+        "z": "e5c0773141d9748b",
         "group": "3d37492639762fc5",
         "name": "log table",
         "order": 0,
@@ -1080,14 +1080,14 @@
         "y": 1460,
         "wires": [
             [
-                "6d9fc52bc5ef550a"
+                "6ce06914d78d9d04"
             ]
         ]
     },
     {
-        "id": "e98b69f890ceaea1",
+        "id": "d31a4fbfa0be5099",
         "type": "function",
-        "z": "d367bcf9962b3ef0",
+        "z": "e5c0773141d9748b",
         "name": "Handle Log Refresh",
         "func": "let logs = global.get(\"iotLogs\") || [];\nmsg.topic = \"iotLogs\";\nmsg.payload = logs;\nreturn msg;\n",
         "outputs": 1,
@@ -1100,14 +1100,14 @@
         "y": 1420,
         "wires": [
             [
-                "da531a719a122833"
+                "8aef8674529f202a"
             ]
         ]
     },
     {
-        "id": "fc1cd6967c50042c",
+        "id": "de79f6aadf935fe2",
         "type": "function",
-        "z": "d367bcf9962b3ef0",
+        "z": "e5c0773141d9748b",
         "name": "Handle Log Clear",
         "func": "const sid = msg.socketid || \"\";\nconst user = flow.get(\"lastLoginUser_\" + sid);\n\nif (user !== \"admin\") {\n    return {\n        topic: \"unauthorizedClear\",\n        socketid: sid\n    };\n}\n\n// Show confirmation modal (instead of clearing immediately)\nreturn {\n    topic: \"confirmClearLogs\",\n    socketid: sid\n};\n",
         "outputs": 1,
@@ -1120,15 +1120,15 @@
         "y": 1500,
         "wires": [
             [
-                "4b72dcced0734cd8",
-                "07ed214946d8e32a"
+                "aedf95836a78ecb3",
+                "403db753ce8dc133"
             ]
         ]
     },
     {
-        "id": "6d9fc52bc5ef550a",
+        "id": "6ce06914d78d9d04",
         "type": "switch",
-        "z": "d367bcf9962b3ef0",
+        "z": "e5c0773141d9748b",
         "name": "",
         "property": "topic",
         "propertyType": "msg",
@@ -1151,17 +1151,17 @@
         "y": 1460,
         "wires": [
             [
-                "e98b69f890ceaea1"
+                "d31a4fbfa0be5099"
             ],
             [
-                "fc1cd6967c50042c"
+                "de79f6aadf935fe2"
             ]
         ]
     },
     {
-        "id": "4b72dcced0734cd8",
+        "id": "aedf95836a78ecb3",
         "type": "debug",
-        "z": "d367bcf9962b3ef0",
+        "z": "e5c0773141d9748b",
         "name": "user clear log",
         "active": true,
         "tosidebar": true,
@@ -1176,9 +1176,9 @@
         "wires": []
     },
     {
-        "id": "904fcf774b15beb8",
+        "id": "dae928369398384c",
         "type": "function",
-        "z": "d367bcf9962b3ef0",
+        "z": "e5c0773141d9748b",
         "name": "clear final",
         "func": "const sid = msg.socketid || \"\";\nconst user = flow.get(\"lastLoginUser_\" + sid);\n\nif (user === \"admin\") {\n    global.set(\"iotLogs\", []);\n    return {\n        topic: \"iotLogs\",\n        payload: [],\n        socketid: sid\n    };\n}\n\nreturn null;",
         "outputs": 1,
@@ -1191,15 +1191,15 @@
         "y": 1500,
         "wires": [
             [
-                "da531a719a122833",
-                "8069e119f7afa84b"
+                "8aef8674529f202a",
+                "455ef558c4c10ebe"
             ]
         ]
     },
     {
-        "id": "07ed214946d8e32a",
+        "id": "403db753ce8dc133",
         "type": "switch",
-        "z": "d367bcf9962b3ef0",
+        "z": "e5c0773141d9748b",
         "name": "",
         "property": "topic",
         "propertyType": "msg",
@@ -1222,17 +1222,17 @@
         "y": 1500,
         "wires": [
             [
-                "da531a719a122833"
+                "8aef8674529f202a"
             ],
             [
-                "904fcf774b15beb8"
+                "dae928369398384c"
             ]
         ]
     },
     {
-        "id": "8069e119f7afa84b",
+        "id": "455ef558c4c10ebe",
         "type": "debug",
-        "z": "d367bcf9962b3ef0",
+        "z": "e5c0773141d9748b",
         "name": "clear final output",
         "active": true,
         "tosidebar": true,
